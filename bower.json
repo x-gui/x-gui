@@ -1,5 +1,5 @@
 {
-  "name": "polymer-1.0-hello",
+  "name": "",
   "version": "0.0.0",
   "authors": [
     "rchrd2 <me@rchrd.net>"
@@ -13,7 +13,6 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.1.0",
     "webcomponentsjs": "~0.7.15"
   }
 }
