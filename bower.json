@@ -1,0 +1,19 @@
+{
+  "name": "polymer-1.0-hello",
+  "version": "0.0.0",
+  "authors": [
+    "rchrd2 <me@rchrd.net>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.1.0",
+    "webcomponentsjs": "~0.7.15"
+  }
+}
