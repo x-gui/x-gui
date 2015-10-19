@@ -39,9 +39,6 @@
     // Creates an object based in the HTML Element prototype
     var MyElementProto = Object.create(HTMLElement.prototype);
 
-    // Creates the "who" attribute and sets a default value
-    MyElementProto.who = 'World';
-
     // Fires when an instance of the element is created
     MyElementProto.createdCallback = function() {
         // Creates the shadow root
@@ -52,31 +49,11 @@
         shadowRoot.appendChild(clone);
 
         // Caches <strong> DOM query
-        this.iframe = shadowRoot.querySelector('strong');
-
-        // Checks if the "who" attribute has been overwritten
-        if (this.hasAttribute('who')) {
-            var who = this.getAttribute('who');
-            this.setWho(who);
-        }
-        else {
-            this.setWho(this.who);
-        }
+        this.iframe = shadowRoot.querySelector('iframe');
     };
 
     // Fires when an attribute was added, removed, or updated
     MyElementProto.attributeChangedCallback = function(attr, oldVal, newVal) {
-        if (attr === 'who') {
-            this.setWho(newVal);
-        }
-    };
-
-    // Sets new value to "who" attribute
-    MyElementProto.setWho = function(val) {
-        this.who = val;
-
-        // Sets "who" value into <strong>
-        this.iframe.textContent = this.who;
     };
 
     // Registers <hello-world> in the main document
