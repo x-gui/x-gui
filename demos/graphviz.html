@@ -1,0 +1,59 @@
+<html>
+<head>
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="../components/x-panes.html">
+  <link rel="import" href="../components/x-codearea.html">
+  <link rel="import" href="../components/x-viz/x-viz.html">
+  <style>
+#code-pane { max-width: 30rem; }
+#codearea { height:100%; width:100%; border:0; }
+#viz-pane {
+  display:flex;
+  justify-content:space-around;
+  align-content:center;
+  border:none;
+  padding-top: 30px;
+}
+  </style>
+</head>
+<body>
+  <x-panes>
+    <div id="code-pane">
+      <textarea id="codearea" is="x-codearea">digraph g { a -> b; }</textarea>
+    </div>
+    <div id="viz-pane">
+      <x-viz id="x-viz" value=""></x-viz>
+    </div>
+  </x-panes>
+  <script>
+// Returns a function, that, as long as it continues to be invoked, will not
+// be triggered. The function will be called after it stops being called for
+// N milliseconds. If `immediate` is passed, trigger the function on the
+// leading edge, instead of the trailing.
+// @see https://davidwalsh.name/javascript-debounce-function
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
+function updateViz(target) {
+  document.getElementById('x-viz').setAttribute('value', target.value);
+}
+updateVizDebounced = debounce(updateViz, 800, false);
+document.getElementById('codearea').onkeyup = function(e) {
+  updateVizDebounced(e.target);
+}
+updateViz(document.getElementById('codearea'));
+  </script>
+</body>
+</html>
