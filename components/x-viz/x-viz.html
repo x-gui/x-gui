@@ -1,0 +1,24 @@
+<script>
+(function(window, doc, undefined) {
+  var thisDoc =  (doc._currentScript || doc.currentScript).ownerDocument;
+  var ElProto = Object.create(HTMLElement.prototype);
+  ElProto.createdCallback = function() {
+    this.updateGraph();
+  };
+  ElProto.updateGraph = function() {
+    var gv = this.getAttribute("value") || "";
+    if (gv !== "") {
+      var svgSrc = Viz(gv, {format:"svg", engine:"dot"});
+      this.innerHTML = svgSrc;
+    }
+  };
+  ElProto.attributeChangedCallback = function(attr, oldVal, newVal) {
+    if (attr == "value" && oldVal !== newVal) {
+      this.updateGraph();
+    }
+  };
+  window.XVizElement = doc.registerElement("x-viz", {
+    prototype: ElProto,
+  });
+})(window, document);
+</script>

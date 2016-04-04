@@ -1,0 +1,21 @@
+<script>
+/**
+ * Just a text area with some styles for code
+ */
+(function(window, doc, undefined) {
+  var thisDoc =  (doc._currentScript || doc.currentScript).ownerDocument;
+  var ElProto = Object.create(HTMLTextAreaElement.prototype);
+  ElProto.createdCallback = function() {
+    this.style.fontFamily = "Menlo, monospace";
+    this.style.padding = "4px";
+    this.style.resize = "none";
+    this.style.outline = "none";
+    this.style.fontSize = "12px";
+    this.style.lineHeight = "14px";
+  };
+  window.MyElement = doc.registerElement('x-codearea', {
+    prototype: ElProto,
+    extends: 'textarea'
+  });
+})(window, document);
+</script>

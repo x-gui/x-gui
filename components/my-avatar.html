@@ -1,0 +1,19 @@
+<script>
+// Example component inline
+// <my-avatar service="twitter" username="rchrd2" />
+
+var MyAvatarPrototype = Object.create(HTMLElement.prototype);
+
+MyAvatarPrototype.createdCallback = function () {
+    var username = this.getAttribute('username');
+    var service = this.getAttribute('service');
+    var url = 'http://avatars.io/' + service + '/' + username;
+    var img = document.createElement('img');
+    img.setAttribute('src', url);
+    this.appendChild(img);
+}
+document.registerElement('my-avatar', {
+    prototype: MyAvatarPrototype
+});
+
+</script>
