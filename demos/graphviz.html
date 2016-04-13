@@ -4,7 +4,10 @@
   <link rel="import" href="../components/x-panes.html">
   <link rel="import" href="../components/x-codearea.html">
   <link rel="import" href="../components/x-viz/x-viz.html">
+  <link rel="import" href="../components/x-controlbar/x-controlbar.html">
   <style>
+/** { box-sizing: border-box; }*/
+body {margin:0;padding:0;}
 #code-pane { max-width: 30rem; }
 #codearea { height:100%; width:100%; border:0; }
 #viz-pane {
@@ -14,17 +17,50 @@
   border:none;
   padding-top: 30px;
 }
+#app {
+  display: flex;
+  flex-direction: column;
+  height:100%;
+}
+x-panes {
+  flex: 1;
+}
   </style>
 </head>
 <body>
-  <x-panes>
-    <div id="code-pane">
-      <textarea id="codearea" is="x-codearea">digraph g { a -> b; }</textarea>
-    </div>
-    <div id="viz-pane">
-      <x-viz id="x-viz" value=""></x-viz>
-    </div>
-  </x-panes>
+  <div id="app">
+    <x-controlbar>
+      <span>&mdash;</span>
+      <select name="select">
+        <option value="value1">Atom</option>
+        <option value="value2" selected>Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select name="select">
+        <option value="value1">File</option>
+        <option value="value2" selected>Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select name="select">
+        <option value="value1">Edit</option>
+        <option value="value2" selected>Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+      <select name="select">
+        <option value="value1">View</option>
+        <option value="value2" selected>Value 2</option>
+        <option value="value3">Value 3</option>
+      </select>
+    </x-controlbar>
+    <x-panes>
+      <div id="code-pane">
+        <textarea id="codearea" is="x-codearea">digraph g { a -> b; }</textarea>
+      </div>
+      <div id="viz-pane">
+        <x-viz id="x-viz" value=""></x-viz>
+      </div>
+    </x-panes>
+  </div>
   <script>
 // Returns a function, that, as long as it continues to be invoked, will not
 // be triggered. The function will be called after it stops being called for
