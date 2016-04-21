@@ -32,13 +32,13 @@ x-panes content div:first-child {
 </template>
 
 <script>
-(function(window, doc, undefined) {
-  var thatDoc = doc;
-  var thisDoc = (thatDoc._currentScript || thatDoc.currentScript).ownerDocument;
-  var template = thisDoc.querySelector('template').content;
+(function(window, document, undefined) {
+  var thisDoc = (document._currentScript || document.currentScript).ownerDocument;
   var El = Object.create(HTMLElement.prototype);
-  El.createdCallback = function() {
-    var clone = doc.importNode(template, true);
+
+  El.loadTemplate = function() {
+    var template = thisDoc.querySelector('template').content;
+    var clone = document.importNode(template, true);
     // Move children into <content> tag
     var content = clone.querySelectorAll('content')[0] || undefined;
     if (content) {
@@ -48,10 +48,14 @@ x-panes content div:first-child {
     }
     this.innerHTML = "";
     this.appendChild(clone);
+  }
+
+  El.createdCallback = function() {
+    this.loadTemplate();
   };
   El.attributeChangedCallback = function(attr, oldVal, newVal) {
   };
-  window.XPanesElement = thatDoc.registerElement('x-panes', {
+  window.XPanesElement = document.registerElement('x-panes', {
     prototype: El
   });
 })(window, document);

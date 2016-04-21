@@ -1,24 +1,59 @@
-<script src="../../bower_components/viz.js/viz.js"></script>
+<script src="viz.js"></script>
 <script>
-(function(window, doc, undefined) {
-  var thisDoc =  (doc._currentScript || doc.currentScript).ownerDocument;
+(function(window, document, undefined) {
+  var thisDoc =  (document._currentScript || document.currentScript).ownerDocument;
   var ElProto = Object.create(HTMLElement.prototype);
+
+  // @see http://shebang.brandonmintern.com/foolproof-html-escaping-in-javascript/
+  function unescapeHtml(s) {
+    var MAP = {
+      '&amp;': '&',
+      '&lt;': '<',
+      '&gt;': '>',
+      '&quot;': '"',
+      '&#39;': "'"
+    };
+    for (var key in MAP) {
+      s = s.replace(new RegExp(key, 'g'), MAP[key]);
+    }
+    return s;
+  }
+
+
   ElProto.createdCallback = function() {
     this.updateGraph();
   };
   ElProto.updateGraph = function() {
     var gv = this.getAttribute("value") || "";
+    gv = unescapeHtml(gv);
+    console.log(gv);
+    var engine = this.getAttribute("engine") || "dot";
+    var format = this.getAttribute("format") || "svg";
+    var result;
     if (gv !== "") {
-      var svgSrc = Viz(gv, {format:"svg", engine:"dot"});
-      this.innerHTML = svgSrc;
+      try {
+        // gv = gv + "\n# random comment " + Math.random();
+        result = Viz(gv, {format: format, engine: engine});
+      } catch (err) {
+        console.log(err);
+        alert('There was an error rendernig the graph. You may need to reload the page');
+      }
+    }
+    if (result && format === "png-image-element") {
+      this.innerHTML = "";
+      this.appendChild(result);
+    } else if (result && format === "svg") {
+      this.innerHTML = result;
+    } else {
+      this.innerHTML = "<pre>" + result + "</pre>";
     }
   };
   ElProto.attributeChangedCallback = function(attr, oldVal, newVal) {
-    if (attr == "value" && oldVal !== newVal) {
+    // if (attr == "value" && oldVal !== newVal) {
       this.updateGraph();
-    }
+    // }
   };
-  window.XVizElement = doc.registerElement("x-viz", {
+  window.XVizElement = document.registerElement("x-viz", {
     prototype: ElProto,
   });
 })(window, document);

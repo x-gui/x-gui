@@ -3,28 +3,36 @@
   <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="x-controlbar.html">
   <style></style>
+  <script>
+var Dispatcher = {
+  send: function(v) {
+    alert(v);
+  }
+}
+  </script>
 </head>
 <body>
   <x-controlbar>
     <select name="select">
-      <option value="value1">Atom</option>
-      <option value="value2" selected>Value 2</option>
-      <option value="value3">Value 3</option>
+      <option value="" selected>Atom</option>
+      <option value="value2">Value 2</option>
+      <!-- Example of nested object (needs to be child of window) -->
+      <option value="value3" on-click="Dispatcher.send">Value 3</option>
     </select>
     <select name="select">
-      <option value="value1">File</option>
-      <option value="value2" selected>Value 2</option>
-      <option value="value3">Value 3</option>
+      <option value="" selected>File</option>
+      <option value="value2" on-click="alert">Value 2</option>
+      <option value="value3" on-click="alert">Value 3</option>
     </select>
     <select name="select">
-      <option value="value1">Edit</option>
-      <option value="value2" selected>Value 2</option>
-      <option value="value3">Value 3</option>
+      <option value="" selected>Edit</option>
+      <option value="value2" on-click="alert">Value 2</option>
+      <option value="value3" on-click="alert">Value 3</option>
     </select>
     <select name="select">
-      <option value="value1">View</option>
-      <option value="value2" selected>Value 2</option>
-      <option value="value3">Value 3</option>
+      <option value="" selected>View</option>
+      <option value="value2" on-click="alert">Value 2</option>
+      <option value="value3" on-click="alert">Value 3</option>
     </select>
   </x-controlbar>
 </body>

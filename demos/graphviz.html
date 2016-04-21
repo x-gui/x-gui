@@ -12,12 +12,14 @@
   }
   </script>
   <!-- <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script> -->
-  <link rel="import" href="../components/x-css-reset/x-css-reset.html">
+  <!-- <link rel="import" href="../components/x-css-reset/x-css-reset.html"> -->
   <!-- <link rel="import" href="../components/x-css-normalize/x-css-normalize.html"> -->
+  <!-- <link rel="import" href="../components/x-state/x-state.html"> -->
   <link rel="import" href="../components/x-panes/x-panes.html">
   <link rel="import" href="../components/x-codearea.html">
   <link rel="import" href="../components/x-viz/x-viz.html">
   <link rel="import" href="../components/x-controlbar/x-controlbar.html">
+  <link rel="import" href="../components/x-yaml/x-yaml.html">
   <style>
 *, *:before, *:after { box-sizing: border-box; }
 html, body { height:100%; }
@@ -31,14 +33,32 @@ x-panes {
   flex: 1;
   /*background-color: grey;*/
 }
-#code-pane { max-width: 30rem; resize: horizontal; }
-#codearea { width:100%; border:0; }
+#code-pane {
+  /*max-width: 30rem; */
+  resize: horizontal;
+}
+#codearea { width:100%; border:0; padding: 5rem;}
 #viz-pane {
   display:flex;
-  justify-content:space-around;
-  align-content:center;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-content:top;
+  align-items:center;
   border:none;
-  padding-top: 30px;
+  overflow-y: scroll;
+}
+#viz-pane svg, #viz-pane img {
+  margin-top: 30px;
+  /*max-width:100%;*/
+}
+x-controlbar > content > select {
+  width: 40px;
+}
+/* firefox selector */
+@supports (-moz-appearance:none) and (display:contents) {
+  x-controlbar > content > select {
+    width: 70px;
+  }
 }
   </style>
 </head>
@@ -47,40 +67,47 @@ x-panes {
     <x-controlbar>
       <span>&mdash;</span>
       <select name="select">
-        <option value="value1">Atom</option>
-        <option value="value2" selected>Value 2</option>
-        <option value="value3">Value 3</option>
+        <option value="" selected>Syntax</option>
+        <option value="graphviz" on-click="handleSyntaxChange">Graphviz</option>
+        <option value="yaml" on-click="handleSyntaxChange">YAML</option>
       </select>
       <select name="select">
-        <option value="value1">File</option>
-        <option value="value2" selected>Value 2</option>
-        <option value="value3">Value 3</option>
+        <option value="" selected>Engine</option>
+        <option value="circo" on-click="handleEngineChange">circo</option>
+        <option value="dot" on-click="handleEngineChange">dot</option>
+        <option value="fdp" on-click="handleEngineChange">fdp</option>
+        <option value="neato" on-click="handleEngineChange">neato</option>
+        <option value="osage" on-click="handleEngineChange">osage</option>
+        <option value="twopi" on-click="handleEngineChange">twopi</option>
       </select>
       <select name="select">
-        <option value="value1">Edit</option>
-        <option value="value2" selected>Value 2</option>
-        <option value="value3">Value 3</option>
-      </select>
-      <select name="select">
-        <option value="value1">View</option>
-        <option value="value2" selected>Value 2</option>
-        <option value="value3">Value 3</option>
+        <option value="" selected>Format</option>
+        <option value="svg" on-click="handleFormatChange">svg</option>
+        <option value="png-image-element" on-click="handleFormatChange">png</option>
+        <option value="xdot" on-click="handleFormatChange">xdot</option>
+        <option value="plain" on-click="handleFormatChange">plain</option>
+        <option value="ps" on-click="handleFormatChange">ps</option>
       </select>
     </x-controlbar>
     <x-panes>
       <div id="code-pane">
-        <textarea id="codearea" is="x-codearea">digraph g { a -> b; }</textarea>
+        <textarea id="codearea" is="x-codearea">
+digraph g {
+  a -> b;
+  c -> d;
+  d -> a;
+  b -> c;
+}
+</textarea>
       </div>
       <div id="viz-pane">
-        <x-viz id="x-viz" value=""></x-viz>
+        <x-viz id="x-viz" value="" engine="circo" format="png-image-element"></x-viz>
       </div>
     </x-panes>
   </div>
   <script>
-// Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
+
+
 // @see https://davidwalsh.name/javascript-debounce-function
 function debounce(func, wait, immediate) {
 	var timeout;
@@ -95,16 +122,162 @@ function debounce(func, wait, immediate) {
 		timeout = setTimeout(later, wait);
 		if (callNow) func.apply(context, args);
 	};
-};
+}
 
-function updateViz(target) {
-  document.getElementById('x-viz').setAttribute('value', target.value);
+
+// Include MicroEvent library inline
+var MicroEvent = function(){};
+MicroEvent.prototype	= {
+	bind: function(event, fct){
+		this._events = this._events || {};
+		this._events[event] = this._events[event]	|| [];
+		this._events[event].push(fct);
+	},
+	unbind: function(event, fct){
+		this._events = this._events || {};
+		if( event in this._events === false  )	return;
+		this._events[event].splice(this._events[event].indexOf(fct), 1);
+	},
+	trigger: function(event /* , args... */){
+		this._events = this._events || {};
+		if( event in this._events === false  )	return;
+		for(var i = 0; i < this._events[event].length; i++){
+			this._events[event][i].apply(this, Array.prototype.slice.call(arguments, 1));
+		}
+	}
+};
+MicroEvent.mixin = function(destObject){
+	var props	= ['bind', 'unbind', 'trigger'];
+	for(var i = 0; i < props.length; i ++){
+		if( typeof destObject === 'function' ){
+			destObject.prototype[props[i]]	= MicroEvent.prototype[props[i]];
+		}else{
+			destObject[props[i]] = MicroEvent.prototype[props[i]];
+		}
+	}
+	return destObject;
 }
-updateVizDebounced = debounce(updateViz, 800, false);
+
+
+/**
+ * Converts from yaml to graphviz format
+ * @param {string} value
+ * @return {string} returns converted syntax or empty string on error
+ * @author Richard Caceres
+ */
+function yaml2Gv(value) {
+  var quote = function(s) {
+    return '"' + s.replace('"', '\\"') + '"';
+  };
+  var edge_str = function(a, b) {
+    if (b !== undefined) {
+      return quote(a) + " -> " + quote(b);
+    } else {
+      return quote(a);
+    }
+  };
+  var get_edges = function(name, children) {
+    var edges = [];
+    edges.push(edge_str(name));
+    for (var i = 0; i < children.length; i++) {
+      if (typeof children[i] === "string") {
+        edges.push(edge_str(name, children[i]));
+      } else {
+        var key = Object.keys(children[i])[0];
+        edges.push(edge_str(name, key));
+        edges = edges.concat(get_edges(key, children[i][key]));
+      }
+    }
+    return edges;
+  };
+  var edges = [];
+  var doc;
+  try {
+    doc = jsyaml.safeLoad(value);
+    for (name in doc) {
+      edges = edges.concat(get_edges(name, doc[name]))
+    };
+    var gv = "digraph g {\n" + edges.join(";\n") + "\n" +
+             "node[shape=rectangle];" +
+             //"rankdir=LR;" +
+             "splines=false;" +
+             "}";
+    return gv;
+  } catch (err) {
+    console.log(err);
+    return ''
+  }
+}
+
+//----
+
+var ST = {
+  text: '',
+  syntax: 'graphviz',
+  engine: 'dot',
+  format: 'svg', // 'png-image-element',
+};
+MicroEvent.mixin(ST);
+
+function handleSyntaxChange(value) {
+  ST.syntax = value;
+  var defaultValue;
+  if (value === "yaml") {
+    defaultValue = '"hello world": \n  - "lorum"';
+  } else {
+    defaultValue = 'digraph g {\n  a -> b;\n}';
+  }
+  ST.text = defaultValue;
+  document.getElementById('codearea').value = defaultValue;
+  ST.trigger('change');
+}
+
+function handleEngineChange(value) {
+  ST.engine = value;
+  ST.trigger('change');
+}
+
+function handleFormatChange(value) {
+  ST.format = value;
+  ST.trigger('change');
+}
+
+function updateViz(value, engine, format, syntax) {
+  if (syntax === 'yaml') {
+    value = yaml2Gv(value);
+  }
+  document.getElementById('x-viz').setAttribute('engine', engine);
+  document.getElementById('x-viz').setAttribute('format', format);
+  document.getElementById('x-viz').setAttribute('value', value);
+}
+// updateVizDebounced = debounce(updateViz, 800, false);
+
+var updateTextDebounced = debounce(function(value){
+  ST.text = value;
+  ST.trigger('change');
+}, 800, false);
+
 document.getElementById('codearea').onkeyup = function(e) {
-  updateVizDebounced(e.target);
+  updateTextDebounced(e.target.value);
 }
-updateViz(document.getElementById('codearea'));
+
+function initState() {
+  // Init from textarea
+  ST.text = document.getElementById('codearea').value;
+
+  // Bind changes
+  ST.bind('change', function() {
+    updateViz(ST.text, ST.engine, ST.format, ST.syntax);
+  });
+
+  window.ST = ST;
+}
+
+function ready() {
+  initState();
+  updateViz(ST.text, ST.engine, ST.format, ST.syntax);
+}
+ready();
   </script>
 </body>
 </html>

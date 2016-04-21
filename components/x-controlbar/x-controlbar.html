@@ -4,37 +4,77 @@
     display:block;
     padding: 0.0625rem 1rem;
   }
-  select {
+  x-controlbar content > select {
     border:1px solid transparent;
     border-radius:0;
     background-color:transparent;
     margin:0;
     color: #333;
     -webkit-appearance: none;
+    outline:none; /* remove focus ring from Webkit */
   }
-  x-controlbar > select, x-controlbar > span {
+  x-controlbar content > select, x-controlbar content > span {
     margin: 0 1.0rem 0 0;
   }
 </style>
+
+<template>
+  <content></content>
+</template>
+
 <script>
-(function(window, doc, undefined) {
-  // Refers to the "importee", which is src/hello-world.html
-  var thisDoc =  (doc._currentScript || doc.currentScript).ownerDocument;
+(function(window, document, undefined) {
+  var thisDoc =  (document._currentScript || document.currentScript).ownerDocument;
+  var ElProto = Object.create(HTMLElement.prototype);
 
-  // Gets content from <template>
-  var El = Object.create(HTMLElement.prototype);
+  ElProto.loadTemplate = function() {
+    var template = thisDoc.querySelector('template').content;
+    var clone = document.importNode(template, true);
+    var content = clone.querySelector('content');
+    while (content && this.childNodes.length) {
+      content.appendChild(this.firstChild);
+    }
+    // this.innerHTML = "";
+    this.appendChild(clone);
+  }
 
-  // var template = thisDoc.querySelector('template').content;
-  // El.createdCallback = function() {
-  //   // var clone = doc.importNode(template, true);
-  //   // this.appendChild(clone);
-  // };
-  El.attributeChangedCallback = function(attr, oldVal, newVal) {
+  var resolve = function(path, obj, safe) {
+    return path.split('.').reduce(function(prev, curr) {
+        return !safe ? prev[curr] : (prev ? prev[curr] : undefined)
+    }, obj || self)
+  };
+
+  /**
+   * Call the on-click value with value as argument
+   */
+  var handleSelectChange = function(select) {
+    var option = select.options[select.selectedIndex];
+    var callbackName = option.getAttribute('on-click');
+    var first = select.querySelector('option');
+    select.value = first.value;
+    if (callbackName) {
+      var callback = resolve(callbackName, window, true);
+      if (callback) {
+        callback(option.value);
+      }
+    }
+  };
+
+  ElProto.createdCallback = function() {
+    this.loadTemplate();
+    var selects = this.querySelectorAll('select');
+    for (var i = 0; i < selects.length; i++) {
+      selects[i].onchange = function(e) {
+        handleSelectChange(e.target);
+      };
+    }
+  };
+  ElProto.attributeChangedCallback = function(attr, oldVal, newVal) {
     if (attr == "value" && oldVal !== newVal) {
     }
   };
-  window.XControlbarElement = doc.registerElement("x-controlbar", {
-    prototype: El,
+  window.XControlbarElement = document.registerElement("x-controlbar", {
+    prototype: ElProto,
   });
 })(window, document);
 </script>
