@@ -1,22 +1,27 @@
 <html>
 <head>
-  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../components/x-panes.html">
+  <script>
+  /* Only load webcomponent-lite polyfill when needed */
+  var webComponentsSupported = ('registerElement' in document
+    && 'import' in document.createElement('link')
+    && 'content' in document.createElement('template'));
+  if (!webComponentsSupported) {
+    var wcPoly = document.createElement('script');
+    wcPoly.src = '../bower_components/webcomponentsjs/webcomponents-lite.js';
+    document.head.appendChild(wcPoly);
+  }
+  </script>
+  <!-- <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script> -->
+  <link rel="import" href="../components/x-css-reset/x-css-reset.html">
+  <!-- <link rel="import" href="../components/x-css-normalize/x-css-normalize.html"> -->
+  <link rel="import" href="../components/x-panes/x-panes.html">
   <link rel="import" href="../components/x-codearea.html">
   <link rel="import" href="../components/x-viz/x-viz.html">
   <link rel="import" href="../components/x-controlbar/x-controlbar.html">
   <style>
-/** { box-sizing: border-box; }*/
-body {margin:0;padding:0;}
-#code-pane { max-width: 30rem; }
-#codearea { height:100%; width:100%; border:0; }
-#viz-pane {
-  display:flex;
-  justify-content:space-around;
-  align-content:center;
-  border:none;
-  padding-top: 30px;
-}
+*, *:before, *:after { box-sizing: border-box; }
+html, body { height:100%; }
+body {margin:0; padding:0;}
 #app {
   display: flex;
   flex-direction: column;
@@ -24,6 +29,16 @@ body {margin:0;padding:0;}
 }
 x-panes {
   flex: 1;
+  /*background-color: grey;*/
+}
+#code-pane { max-width: 30rem; resize: horizontal; }
+#codearea { width:100%; border:0; }
+#viz-pane {
+  display:flex;
+  justify-content:space-around;
+  align-content:center;
+  border:none;
+  padding-top: 30px;
 }
   </style>
 </head>

@@ -1,41 +1,34 @@
-<template>
-  <style>
-    x-controlbar {
-      background-color:#ccc;
-      display:block;
-      padding: 0.0625rem 1rem;
-    }
-    select {
-      border:1px solid transparent;
-      border-radius:0;
-      background-color:transparent;
-      margin:0;
-      color: #333;
-      -webkit-appearance: none;
-    }
-    x-controlbar > select, x-controlbar > span {
-      margin: 0 1.0rem 0 0;
-    }
-  </style>
-</template>
+<style>
+  x-controlbar {
+    background-color:#ccc;
+    display:block;
+    padding: 0.0625rem 1rem;
+  }
+  select {
+    border:1px solid transparent;
+    border-radius:0;
+    background-color:transparent;
+    margin:0;
+    color: #333;
+    -webkit-appearance: none;
+  }
+  x-controlbar > select, x-controlbar > span {
+    margin: 0 1.0rem 0 0;
+  }
+</style>
 <script>
 (function(window, doc, undefined) {
   // Refers to the "importee", which is src/hello-world.html
   var thisDoc =  (doc._currentScript || doc.currentScript).ownerDocument;
 
   // Gets content from <template>
-  var template = thisDoc.querySelector('template').content;
   var El = Object.create(HTMLElement.prototype);
-  El.createdCallback = function() {
-    // this.innerHTML = "<div>From innerHTML</div>";
 
-    // Creates the shadow root
-    // var shadowRoot = this.createShadowRoot();
-
-    // Adds a template clone into shadow root
-    var clone = doc.importNode(template, true);
-    this.appendChild(clone);
-  };
+  // var template = thisDoc.querySelector('template').content;
+  // El.createdCallback = function() {
+  //   // var clone = doc.importNode(template, true);
+  //   // this.appendChild(clone);
+  // };
   El.attributeChangedCallback = function(attr, oldVal, newVal) {
     if (attr == "value" && oldVal !== newVal) {
     }
