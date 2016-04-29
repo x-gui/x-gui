@@ -1,0 +1,207 @@
+<html>
+<head>
+  <script>
+  /* Only load webcomponent-lite polyfill when needed */
+  var webComponentsSupported = ('registerElement' in document
+    && 'import' in document.createElement('link')
+    && 'content' in document.createElement('template'));
+  if (!webComponentsSupported) {
+    var wcPoly = document.createElement('script');
+    wcPoly.src = '../../bower_components/webcomponentsjs/webcomponents-lite.js';
+    document.head.appendChild(wcPoly);
+  }
+  </script>
+  <script src="../../bower_components/microevent/microevent.js"></script>
+  <link rel="import" href="../../components/x-css-reset/x-css-reset.html">
+  <!-- <link rel="import" href="../components/x-css-normalize/x-css-normalize.html"> -->
+  <!-- <link rel="import" href="../components/x-state/x-state.html"> -->
+  <link rel="import" href="../../components/x-panes/x-panes.html">
+  <link rel="import" href="../../components/x-codearea.html">
+  <link rel="import" href="../../components/x-controlbar/x-controlbar.html">
+  <style>
+*, *:before, *:after { box-sizing: border-box; }
+html, body { height:100%; }
+body {margin:0; padding:0; font-family: sans-serif;}
+#app { display: flex; flex-direction: column; height:100%; }
+x-panes { flex: 1; }
+.codearea { display: block; width:100%; height:100%; border:0; padding: 5rem;}
+.code-pane { display: flex; flex-direction: column; }
+.pane-title { padding: 5px; font-size: 11px; line-height: 11px; color: #ccc; }
+#output-pane { }
+#iframe { width: 100%; height:100%; }
+
+/* controlbar styles */
+x-controlbar > content > select { width: 50px; }
+/* firefox selector */
+@supports (-moz-appearance:none) and (display:contents) {
+  x-controlbar > content > select {
+    width: 70px;
+  }
+}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <x-controlbar>
+      <select name="select">
+        <option value="" selected>WebBin</option>
+        <option value="About" on-click="alert">About</option>
+      </select>
+      <select name="select">
+        <option value="" selected>View</option>
+        <option value="true" on-click="showAllPanes">Show All</option>
+        <option value="html-pane" on-click="togglePane">Toggle HTML</option>
+        <option value="css-pane" on-click="togglePane">Toggle CSS</option>
+        <option value="js-pane" on-click="togglePane">Toggle JavaScript</option>
+        <option value="output-pane" on-click="togglePane">Toggle Output</option>
+      </select>
+      <select name="select">
+        <option value="" selected>Help</option>
+        <option value="loadExample" on-click="togglePane">Load Example</option>
+      </select>
+    </x-controlbar>
+    <x-panes>
+      <div id="html-pane" class="code-pane">
+        <div class="pane-title">HTML</div>
+<textarea id="html" class="codearea" is="x-codearea">
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+</head>
+<body>
+  <div>Hello, World!</div>
+  <button id="btn">Click Me</button>
+</body>
+</html>
+</textarea>
+      </div>
+      <div id="css-pane" class="code-pane">
+        <div class="pane-title">CSS</div>
+<textarea id="css" class="codearea" is="x-codearea">
+body {
+  background-color: #efffee;
+  font-family: sans-serif;
+  font-size:13px;
+}
+</textarea>
+      </div>
+      <div id="js-pane" class="code-pane">
+        <div class="pane-title">JavaScript</div>
+<textarea id="js" class="codearea" is="x-codearea">
+console.log('hi');
+console.log('error');
+
+document.getElementById('btn').onclick = function() {
+   alert('hi');
+};
+</textarea>
+      </div>
+      <div id="output-pane" class="code-pane">
+        <div class="pane-title">Output</div>
+        <iframe id="iframe" src="iframe.html"></iframe>
+      </div>
+    </x-panes>
+  </div>
+  <script>
+var ST = {
+  html: '',
+  js: '',
+  css: '',
+  panes: {
+    'html-pane': true,
+    'css-pane': true,
+    'js-pane': true,
+    'output-pane': true,
+  }
+};
+MicroEvent.mixin(ST);
+
+
+function togglePane(id) {
+  var el = document.getElementById(id);
+  ST.panes[id] = !ST.panes[id];
+  ST.trigger('change');
+}
+
+function sendMessage(data) {
+  document.getElementById('iframe').contentWindow.postMessage(data, '*');
+}
+
+/**
+ * Update the output page
+ * Note, have to reload iframe
+ */
+function updateOutput(html, css, js) {
+  if (updateOutput.prevHtml !== html || updateOutput.prevCss !== css ||
+        updateOutput.prevJs !== js) {
+    var el = document.getElementById('iframe');
+    el.contentWindow.location.reload();
+    document.getElementById('iframe').onload = function() {
+      sendMessage({id: 'css', value: css});
+      sendMessage({id: 'html', value: html});
+      sendMessage({id: 'js', value: js});
+    };
+  }
+
+  // keep previous
+  updateOutput.prevHtml = html;
+  updateOutput.prevCss = css;
+  updateOutput.prevJs = js;
+}
+
+function updatePanes(ST) {
+  var key, el;
+  for (key in ST.panes) {
+    el = document.getElementById(key);
+    el.style.display = ST.panes[key] ? 'block' : 'none';
+  }
+}
+
+// updateVizDebounced = debounce(updateViz, 800, false);
+
+// var updateTextDebounced = debounce(function(value){
+//   ST.text = value;
+//   ST.trigger('change');
+// }, 800, false);
+
+
+function initState() {
+  ST.html = document.getElementById('html').value;
+  ST.css = document.getElementById('css').value;
+  ST.js = document.getElementById('js').value;
+  window.ST = ST;
+}
+
+function initHandlers() {
+  document.getElementById('html').onkeyup = function(e) {
+    ST.html = e.target.value;
+    ST.trigger('change');
+  }
+  document.getElementById('js').onkeyup = function(e) {
+    ST.js = e.target.value;
+    ST.trigger('change');
+  }
+  document.getElementById('css').onkeyup = function(e) {
+    ST.css = e.target.value;
+    ST.trigger('change');
+  }
+  ST.bind('change', function() {
+    updateOutput(ST.html, ST.css, ST.js);
+    updatePanes(ST);
+  });
+}
+
+function ready() {
+  initState();
+  initHandlers();
+  document.getElementById('iframe').onload = function() {
+    updateOutput(ST.html, ST.css, ST.js);
+  };
+}
+ready();
+  </script>
+</body>
+</html>

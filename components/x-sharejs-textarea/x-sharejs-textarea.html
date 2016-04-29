@@ -1,0 +1,105 @@
+<!--
+Encapsulates a sharejs-connected textarea
+-->
+
+<script src="lib/channel/bcsocket-uncompressed.js"></script>
+<script src="lib/share/share.uncompressed.js"></script>
+<script src="lib/share/textarea.js"></script>
+
+<style>
+x-sharejs-textarea * { box-sizing: border-box; margin: 0; }
+</style>
+
+<template>
+  <textarea class="sharejs-textarea" disabled></textarea>
+</template>
+
+<script>
+(function(window, document, undefined) {
+  var thisDoc = (document._currentScript || document.currentScript).ownerDocument;
+  var El = Object.create(HTMLElement.prototype);
+
+  El.loadTemplate = function() {
+    console.log('loadTemplate');
+    var template = thisDoc.querySelector('template').content;
+    var clone = document.importNode(template, true);
+    this.innerHTML = "";
+    this.appendChild(clone);
+  }
+
+  El.loadDoc = function() {
+    var elem = this.querySelector('textarea');
+    console.log(elem);
+    var name = this.getAttribute('name') || 'default';
+    var server = this.getAttribute('server') || 'http://localhost:8000/channel';
+    sharejs.open(name, 'text', server, function(error, doc) {
+      if (error) {
+        throw error;
+      }
+      console.log('Document open at version ' + doc.version);
+      if (doc.created) {
+        console.log('The document was created!');
+      }
+      // console.log(JSON.stringify(doc.snapshot));
+      doc.on('change', function(op) {
+        console.log("Version: " + doc.version + ":" , op);
+        // console.log(JSON.stringify(doc.snapshot));
+      });
+
+      // trying these
+
+      // it seems like there's a delay before the browser channel thinks it's
+      // disconnected
+      doc.on('closed', function(op) {
+        console.log("Connection Closed");
+        console.log(doc.connection.state);
+      });
+      doc.connection.on('disconnected', function(op) {
+        console.log("Connection disconnected");
+        // console.log(doc.connection.state);
+
+      });
+      doc.connection.on('ok', function(op) {
+        console.log("Connection ok");
+        // console.log(doc.connection.state);
+
+      });
+      doc.connection.on('error', function(op) {
+        console.log("Connection error");
+        // console.log(doc.connection.state);
+
+      });
+      // trying
+
+      elem.disabled = false;
+      doc.attach_textarea(elem);
+      this.doc = doc;
+      window.$doc = doc;
+
+      // For some reason, observing doc.state effects the value of doc.state (uncertainty principle)
+      // But I was able to observe that doc.connection.state contains the connection status
+      setInterval(function() {
+        // console.log(doc.connection);
+
+        // console.log(doc.state, doc.connection.connected, doc.connection.state, doc.connection.socket.readyState);
+
+      }, 3000);
+    });
+  };
+
+  El.createdCallback = function() {
+    console.log('created');
+    this.loadTemplate();
+    this.loadDoc();
+  };
+  El.attributeChangedCallback = function(attr, oldVal, newVal) {
+    if (attr === "name") {
+      // reconnect
+      this.loadDoc();
+    }
+  };
+  window.XShareJsTextarea = document.registerElement('x-sharejs-textarea', {
+    prototype: El
+  });
+})(window, document);
+</script>

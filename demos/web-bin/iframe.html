@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <script>
+    /**
+     * Simple handler that executes messages.
+     * Super unsafe, but protected by sandstorm
+     */
+    function receiveMessage(e) {
+      document.getElementById(e.data.id).innerHTML = e.data.value;
+    }
+    window.addEventListener("message", receiveMessage, false);
+    </script>
+    <script id="js"></script>
+    <style id="css"></style>
+  </head>
+  <body id="html"></body>
+</html>

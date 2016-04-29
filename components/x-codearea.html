@@ -5,6 +5,20 @@
 (function(window, doc, undefined) {
   var thisDoc =  (doc._currentScript || doc.currentScript).ownerDocument;
   var ElProto = Object.create(HTMLTextAreaElement.prototype);
+
+  /**
+   * @param {element} el
+   * @param {string} insertion
+   */
+  function insertAtCaret(el, insertion) {
+    var prevSelectionStart = el.selectionStart;
+    el.value = el.value.substring(0, el.selectionStart) +
+               insertion +
+               el.value.substring(el.selectionEnd);
+    el.selectionStart = prevSelectionStart + insertion.length;
+    el.selectionEnd = el.selectionStart;
+  };
+
   ElProto.createdCallback = function() {
     this.style.fontFamily = "Menlo, monospace";
     this.style.padding = "4px";
@@ -15,6 +29,12 @@
     this.style.whiteSpace = "pre";
     this.style.wordWrap = "normal";
     this.style.overflowX = "scroll";
+    this.onkeydown = function (e) {
+      if (e.keyCode === 9) {
+        e.preventDefault();
+        insertAtCaret(e.target, "  ");
+      }
+    };
   };
   window.MyElement = doc.registerElement('x-codearea', {
     prototype: ElProto,
