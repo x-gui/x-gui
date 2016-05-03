@@ -47,9 +47,6 @@ x-sharejs-textarea * { box-sizing: border-box; margin: 0; }
       });
 
       // trying these
-
-      // it seems like there's a delay before the browser channel thinks it's
-      // disconnected
       doc.on('closed', function(op) {
         console.log("Connection Closed");
         console.log(doc.connection.state);

@@ -18,7 +18,7 @@
   <link rel="import" href="../../components/x-panes/x-panes.html">
   <link rel="import" href="../../components/x-codearea.html">
   <link rel="import" href="../../components/x-controlbar/x-controlbar.html">
-  <link rel="import" href="../../components/x-sharejs-textarea.html">
+  <link rel="import" href="../../components/x-sharejs-textarea/x-sharejs-textarea.html">
   <style>
 *, *:before, *:after { box-sizing: border-box; }
 html, body { height:100%; }
@@ -64,7 +64,7 @@ x-controlbar > content > select { width: 50px; }
     <x-panes>
       <div id="html-pane" class="code-pane">
         <div class="pane-title">HTML</div>
-<textarea id="html" class="codearea" is="x-codearea">
+<x-sharejs-textarea id="html" class="codearea" name="share-html" server="/channel">
 <!DOCTYPE html>
 <html>
 <head>
@@ -77,28 +77,28 @@ x-controlbar > content > select { width: 50px; }
   <button id="btn">Click Me</button>
 </body>
 </html>
-</textarea>
+</x-sharejs-textarea>
       </div>
       <div id="css-pane" class="code-pane">
         <div class="pane-title">CSS</div>
-<textarea id="css" class="codearea" is="x-codearea">
+<x-sharejs-textarea id="css" class="codearea" name="share-css" server="/channel">
 body {
   background-color: #efffee;
   font-family: sans-serif;
   font-size:13px;
 }
-</textarea>
+</x-sharejs-textarea>
       </div>
       <div id="js-pane" class="code-pane">
         <div class="pane-title">JavaScript</div>
-<textarea id="js" class="codearea" is="x-codearea">
+<x-sharejs-textarea id="js" class="codearea" name="share-js" server="/channel">
 console.log('hi');
 console.log('error');
 
 document.getElementById('btn').onclick = function() {
    alert('hi');
 };
-</textarea>
+</x-sharejs-textarea>
       </div>
       <div id="output-pane" class="code-pane">
         <div class="pane-title">Output</div>

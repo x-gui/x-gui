@@ -34,8 +34,7 @@ x-panes content div:first-child {
   El.loadTemplate = function() {
     var template = thisDoc.querySelector('template').content;
     var clone = document.importNode(template, true);
-    // Move children into <content> tag
-    var content = clone.querySelectorAll('content')[0] || undefined;
+    var content = clone.querySelector('content');
     if (content) {
       while (this.childNodes.length) {
         content.appendChild(this.firstChild);
