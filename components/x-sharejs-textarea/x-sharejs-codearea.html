@@ -7,32 +7,27 @@ Encapsulates a sharejs-connected textarea
 <script src="lib/share/textarea.js"></script>
 
 <style>
-x-sharejs-textarea * { box-sizing: border-box; margin: 0; }
+textarea[is=x-sharejs-textarea] * { box-sizing: border-box; margin: 0; }
 </style>
-
-<template>
-  <textarea disabled ><content></content></textarea>
-</template>
 
 <script>
 (function(window, document, undefined) {
   var thisDoc = (document._currentScript || document.currentScript).ownerDocument;
-  var El = Object.create(HTMLElement.prototype);
+  var El = Object.create(HTMLTextAreaElement.prototype);
 
-  El.loadTemplate = function() {
-    // load default textarea
-    var template = thisDoc.querySelector('template').content;
-    var clone = document.importNode(template, true);
-    this.innerHTML = "";
-    this.appendChild(clone);
-  }
+  var resolve = function(path, obj, safe) {
+    return path.split('.').reduce(function(prev, curr) {
+        return !safe ? prev[curr] : (prev ? prev[curr] : undefined)
+    }, obj || self)
+  };
 
   El.loadDoc = function() {
-    var elem = this.querySelector('textarea');
-    console.log(elem);
+    console.log('hi');
+    var elem = this;
     var name = this.getAttribute('name') || 'default';
-    var server = this.getAttribute('server') || 'http://localhost:8000/channel';
+    var server = this.getAttribute('server') || '/channel';
     sharejs.open(name, 'text', server, function(error, doc) {
+      console.log('in share js open');
       if (error) {
         throw error;
       }
@@ -42,8 +37,8 @@ x-sharejs-textarea * { box-sizing: border-box; margin: 0; }
       }
       // console.log(JSON.stringify(doc.snapshot));
       doc.on('change', function(op) {
-        console.log("Version: " + doc.version + ":" , op);
-        // console.log(JSON.stringify(doc.snapshot));
+        //console.log("Version: " + doc.version + ":" , op);
+        //  console.log(JSON.stringify(doc.snapshot));
       });
 
       // trying these
@@ -73,15 +68,31 @@ x-sharejs-textarea * { box-sizing: border-box; margin: 0; }
 
       elem.disabled = false;
       doc.attach_textarea(elem);
-      this.doc = doc;
-      window.$doc = doc;
+
+      // ready callback
+      var callbackName = elem.getAttribute('on-ready');
+      if (callbackName) {
+        var callback = resolve(callbackName, window, true);
+        if (callback) {
+          callback(elem);
+        }
+      }
     });
   };
 
   El.createdCallback = function() {
-    console.log('created');
-    this.loadTemplate();
     this.loadDoc();
+
+    // copied from code area
+    this.style.fontFamily = "Menlo, monospace";
+    this.style.padding = "4px";
+    this.style.resize = "none";
+    this.style.outline = "none";
+    this.style.fontSize = "12px";
+    this.style.lineHeight = "14px";
+    this.style.whiteSpace = "pre";
+    this.style.wordWrap = "normal";
+    this.style.overflowX = "scroll";
   };
   El.attributeChangedCallback = function(attr, oldVal, newVal) {
     if (attr === "name") {
@@ -89,8 +100,9 @@ x-sharejs-textarea * { box-sizing: border-box; margin: 0; }
       this.loadDoc();
     }
   };
-  window.XShareJsTextarea = document.registerElement('x-sharejs-textarea', {
-    prototype: El
+  window.XShareJsCodeArea = document.registerElement('x-sharejs-codearea', {
+    prototype: El,
+    extends: 'textarea'
   });
 })(window, document);
 </script>

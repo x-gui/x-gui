@@ -1,21 +1,18 @@
 <html>
   <head>
     <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="x-sharejs-textarea.html">
+    <link rel="import" href="x-sharejs-codearea.html">
     <style>
     * { box-sizing: content-box; margin: 0; }
     body { padding: 20px; }
     #container { display: flex; }
-    x-sharejs-textarea { flex: 1; }
-    x-sharejs-textarea textarea { width: 100%; height: 100%; }
+    textarea { width: 100%; height: 100%; }
     </style>
   </head>
   <body>
     <div id="container">
       <!-- http://localhost:8000/sockjs for web socket if you're on the same channel -->
-      <x-sharejs-textarea name="example" server="/channel"></x-sharejs-textarea>
-      <div>|</div>
-      <x-sharejs-textarea name="example2" server="/channel"></x-sharejs-textarea>
+      <textarea is="x-sharejs-codearea" name="example" server="/channel">foobar</textarea>
     </div>
   </body>
 </html>

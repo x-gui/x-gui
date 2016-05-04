@@ -2726,7 +2726,37 @@ $ = function(a, b) {
     Y($.CONNECTING);
     e("onconnecting");
     clearTimeout(v);
-    w = new Ed(b.appVersion, null != k ? k.Gb : void 0);
+
+
+    // BIG FAT HACK
+
+    // Notes about Browser Chanel's 2 second delay
+    // https://groups.google.com/forum/#!topic/sharejs/iUjfW7zPHzM
+    //
+    // """
+    // Buffering Proxy Test
+    // Some (misbehaving) proxies will buffer chunked replies.
+    // This breaks the servers ability to "stream" reply chunks to the client.
+    // The "Buffering Proxy Detect" phase sends two chunks from the server to
+    // client with a 2 second gap of time between them. If the replies arrive at
+    // the client as individual chunks no buffering proxy exists and data can be
+    // streamed from the server to client.
+    //
+    // If the two individual chunks are merged together into a single reply when
+    //  they reach the client, a buffering proxy likely exists and streaming
+    // will be disabled.
+    // """
+    // https://web.archive.org/web/20121226064550/http://code.google.com/p/libevent-browserchannel-server/wiki/BrowserChannelProtocol#Buffering_Proxy_Test
+
+    // True implies the connection is buffered,
+    // False means unbuffered
+    // null means that the results are not available.
+
+    w = new Ed(b.appVersion, null != k ? k.Gb : void 0, true); // added true
+
+    // RICHARD
+
+
     b.crossDomainXhr && (w.ab = !0);
     w.e = g;
     c && w.S(c);
@@ -2737,7 +2767,15 @@ $ = function(a, b) {
       t.a.info("setFailFast: true");
       (t.p || t.G) && t.aa > (t.Ka ? 0 : t.pb) && (t.a.info("Retry count " + t.aa + " > new maxRetries " + (t.Ka ? 0 : t.pb) + ". Fail immediately!"), t.p ? (t.p.cancel(), t.Ba(t.p)) : (l.clearTimeout(t.G), t.G = null, Z(t, 2)));
     }
-    return w.kb("" + a + "/test", "" + a + "/bind", d, null != k ? k.Y : void 0, null != k ? k.ya : void 0);
+    //return w.kb("" + a + "/test", "" + a + "/bind", d, null != k ? k.Y : void 0, null != k ? k.ya : void 0);
+    // console.log(w.kb);
+    return w.kb(
+      "" + a + "/test",
+      "" + a + "/bind", d,
+      null != k ? k.Y : void 0,
+      null != k ? k.ya : void 0
+    );
+
   };
   this.open = function() {
     if (r.readyState !== r.CLOSED) {

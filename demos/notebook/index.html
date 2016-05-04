@@ -1,0 +1,98 @@
+<html>
+<head>
+  <script>
+  /* Only load webcomponent-lite polyfill when needed */
+  var webComponentsSupported = ('registerElement' in document
+    && 'import' in document.createElement('link')
+    && 'content' in document.createElement('template'));
+  if (!webComponentsSupported) {
+    var wcPoly = document.createElement('script');
+    wcPoly.src = '../../bower_components/webcomponentsjs/webcomponents-lite.js';
+    document.head.appendChild(wcPoly);
+  }
+  </script>
+  <script src="../../bower_components/microevent/microevent.js"></script>
+  <link rel="import" href="../../components/x-css-reset/x-css-reset.html">
+  <!-- <link rel="import" href="../components/x-css-normalize/x-css-normalize.html"> -->
+  <!-- <link rel="import" href="../components/x-state/x-state.html"> -->
+  <link rel="import" href="../../components/x-panes/x-panes.html">
+  <link rel="import" href="../../components/x-codearea.html">
+  <link rel="import" href="../../components/x-controlbar/x-controlbar.html">
+  <link rel="import" href="../../components/x-sharejs-textarea/x-sharejs-codearea.html">
+  <style>
+*, *:before, *:after { box-sizing: border-box; }
+html, body { height:100%; }
+body {margin:0; padding:0; font-family: monospace; background-color: #222; }
+#app { display: flex; flex-direction: column; height:100%; }
+#layout { flex: 1; display: flex; flex-direction: row; justify-content: center; }
+#left-column { width: 200px; }
+#center-column { width: 500px; background-color: black; display: flex; flex-direction: column; }
+#right-column { width: 200px;}
+
+#left-column, #center-column, #right-column {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: auto;
+}
+
+#main-textarea {
+  flex: 1;
+  outline: none;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  border: 0;
+  margin: 0;
+  padding: 0px 18px 18px 0px;
+  display: block;
+  background-color: #000;
+  color: #6c6c6c;
+  box-sizing: border-box;
+}
+
+/* controlbar styles */
+x-controlbar { background-color: rgba(200, 200, 200, 0.2); }
+x-controlbar > content > select { width: 100px; color: #ccc; }
+
+/* firefox selector */
+@supports (-moz-appearance:none) and (display:contents) {
+  x-controlbar > content > select {
+    width: 70px;
+  }
+}
+  </style>
+</head>
+<body bgcolor="#dddddd">
+  <div id="app">
+    <x-controlbar>
+      <select name="select">
+        <option value="" selected>Notebook</option>
+        <option value="About" on-click="alert">About</option>
+      </select>
+      <select name="select">
+        <option value="" selected>File</option>
+        <option value="Enter the path for the new file" on-click="prompt">New File</option>
+      </select>
+      <select name="select">
+        <option value="" selected>Help</option>
+      </select>
+    </x-controlbar>
+
+    <div id="layout">
+      <div id="left-column"></div>
+      <div id="center-column">
+        <textarea
+          id="main-textarea"
+          is="x-sharejs-codearea"
+          name="wiki-1"
+          server="http://localhost:8000/channel"
+          on-ready=""
+        ></textarea>
+      </div>
+      <div id="right-column"></div>
+    </div>
+  </div>
+</body>
+</html>
