@@ -3,15 +3,19 @@
   <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="x-codearea.html">
   <style>
+  #text { width: 400px; height: 200px; }
   </style>
 </head>
 <body>
-  <textarea is="x-codearea">
+  <p>A codearea extends a textarea with styles and rules that are useful for editing source code.</p>
+  <textarea id="text" is="x-codearea">
 alert(1);
 // this is cool
 function toBe() {
   return 'or not to be';
 }
+
+// Really long line http://localhost:8011/components/x-codearea/x-codearea-example.html
   </textarea>
 </body>
 </html>

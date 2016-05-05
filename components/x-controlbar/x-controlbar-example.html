@@ -14,7 +14,7 @@ var Dispatcher = {
 <body>
   <x-controlbar>
     <select name="select">
-      <option value="" selected>Atom</option>
+      <option value="" selected>Example</option>
       <option value="value2">Value 2</option>
       <!-- Example of nested object (needs to be child of window) -->
       <option value="value3" on-click="Dispatcher.send">Value 3</option>
@@ -35,5 +35,8 @@ var Dispatcher = {
       <option value="value3" on-click="alert">Value 3</option>
     </select>
   </x-controlbar>
+  <br/>
+  <p>Web Apps can often benefit from a controlbar.</p>
+  <p>Each option can trigger a callback with an argument.</p>
 </body>
 </html>

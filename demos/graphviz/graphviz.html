@@ -7,37 +7,27 @@
     && 'content' in document.createElement('template'));
   if (!webComponentsSupported) {
     var wcPoly = document.createElement('script');
-    wcPoly.src = '../bower_components/webcomponentsjs/webcomponents-lite.js';
+    wcPoly.src = '../../bower_components/webcomponentsjs/webcomponents-lite.js';
     document.head.appendChild(wcPoly);
   }
   </script>
   <!-- <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script> -->
-  <!-- <link rel="import" href="../components/x-css-reset/x-css-reset.html"> -->
-  <!-- <link rel="import" href="../components/x-css-normalize/x-css-normalize.html"> -->
-  <!-- <link rel="import" href="../components/x-state/x-state.html"> -->
-  <link rel="import" href="../components/x-panes/x-panes.html">
-  <link rel="import" href="../components/x-codearea.html">
-  <link rel="import" href="../components/x-viz/x-viz.html">
-  <link rel="import" href="../components/x-controlbar/x-controlbar.html">
-  <link rel="import" href="../components/x-yaml/x-yaml.html">
+  <!-- <link rel="import" href="../../components/x-css-reset/x-css-reset.html"> -->
+  <!-- <link rel="import" href="../../components/x-css-normalize/x-css-normalize.html"> -->
+  <link rel="import" href="../../components/x-panes/x-panes.html">
+  <link rel="import" href="../../components/x-codearea/x-codearea.html">
+  <link rel="import" href="../../components/x-viz/x-viz.html">
+  <link rel="import" href="../../components/x-controlbar/x-controlbar.html">
+  <link rel="import" href="../../components/lib-yaml/lib-yaml.html">
   <style>
 *, *:before, *:after { box-sizing: border-box; }
 html, body { height:100%; }
 body {margin:0; padding:0;}
-#app {
-  display: flex;
-  flex-direction: column;
-  height:100%;
-}
-x-panes {
-  flex: 1;
-  /*background-color: grey;*/
-}
-#code-pane {
-  /*max-width: 30rem; */
-  resize: horizontal;
-}
-#codearea { width:100%; border:0; padding: 5rem;}
+#app { display: flex; flex-direction: column; height:100%; }
+x-panes { flex: 1; }
+x-panes > content > div { border-right: 1px solid #ccc; }
+#code-pane { resize: horizontal; }
+#codearea { width:100%; border:0; padding: 0.5rem;}
 #viz-pane {
   display:flex;
   flex-direction:column;
@@ -47,13 +37,8 @@ x-panes {
   border:none;
   overflow-y: scroll;
 }
-#viz-pane svg, #viz-pane img {
-  margin-top: 30px;
-  /*max-width:100%;*/
-}
-x-controlbar > content > select {
-  width: 40px;
-}
+#viz-pane svg, #viz-pane img { margin-top: 30px; }
+x-controlbar > content > select { width: 40px; }
 /* firefox selector */
 @supports (-moz-appearance:none) and (display:contents) {
   x-controlbar > content > select {

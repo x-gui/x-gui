@@ -3,21 +3,25 @@
   <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="x-panes.html">
   <style>
-  * { box-sizing: content-box; margin: 0; }
+  * { box-sizing: border-box; margin: 0; }
   body { padding: 20px; }
-  #code-pane { max-width: 30rem; background-color:#ccc;}
-  #code-area { height:100%; width:100%; border:0; background-color:#aaa; }
-  #x-panes {width:100%;}
-  x-panes content div {
-    /* example adjusting default magin */
-    margin-left: 20px;
-  }
+  #x-panes { width:100%; height: 100%; border: 2px solid #ccc; }
+  .pane { background-color:#eee; padding: 20px; }
   </style>
 </head>
 <body>
   <x-panes id="x-panes">
-    <div id="code-pane"></div>
-    <div id="code-area"></div>
+    <div class="pane">
+      Pane 1<br>
+      <br>
+      &lt;x-panes&gt; displays it's children in even columns.
+    </div>
+    <div class="pane">
+      Pane 2
+    </div>
+    <div class="pane">
+      Pane 3
+    </div>
   </x-panes>
 </body>
 </html>

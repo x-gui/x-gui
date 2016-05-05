@@ -1,3 +1,16 @@
+<style>
+textarea[is=x-codearea] {
+  font-family: Menlo, monospace;
+  padding: 4px;
+  resize: none;
+  outline: none;
+  font-size: 12px;
+  line-height: 14px;
+  white-space: pre;
+  word-wrap: normal;
+  overflow-x: scroll;
+}
+</style>
 <script>
 /**
  * Just a text area with some styles for code
@@ -20,15 +33,7 @@
   };
 
   ElProto.createdCallback = function() {
-    this.style.fontFamily = "Menlo, monospace";
-    this.style.padding = "4px";
-    this.style.resize = "none";
-    this.style.outline = "none";
-    this.style.fontSize = "12px";
-    this.style.lineHeight = "14px";
-    this.style.whiteSpace = "pre";
-    this.style.wordWrap = "normal";
-    this.style.overflowX = "scroll";
+    this.spellcheck = false;
     this.onkeydown = function (e) {
       if (e.keyCode === 9) {
         e.preventDefault();
