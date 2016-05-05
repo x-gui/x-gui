@@ -1,10 +1,10 @@
-# Custom Web Components
+*cmp* is a minimalist set of web components for building consistent web app user interfaces.
 
-## Some guidelines:
-  - Try to avoid using a web component framework. Use only VanillaJS.  
+## Some guidelines
+  - Avoid using a web component framework. Use only VanillaJS.  
   - Try to not create deep dependancies. Try to keep each component shallow.  
   - Do not use ShadowDOM, because the polyfill is expensive.  
-
+  - Consider only one of two of these components could be included without extra overhead.  
 
 ## Structure
 
