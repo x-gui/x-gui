@@ -4,7 +4,17 @@ Encapsulates a sharejs-connected textarea
 <link rel="import" href="../lib-sharejs/lib-sharejs-uncompressed.html">
 
 <style>
-textarea[is=x-sharejs-textarea] * { box-sizing: border-box; margin: 0; }
+textarea[is=x-sharejs-codearea] {
+  font-family: Menlo, monospace;
+  padding: 4px;
+  resize: none;
+  outline: none;
+  font-size: 12px;
+  line-height: 14px;
+  white-space: pre;
+  word-wrap: normal;
+  overflow-x: scroll;
+}
 </style>
 
 <script>
@@ -19,7 +29,6 @@ textarea[is=x-sharejs-textarea] * { box-sizing: border-box; margin: 0; }
   };
 
   El.loadDoc = function() {
-    console.log('hi');
     var elem = this;
     var name = this.getAttribute('name') || 'default';
     var server = this.getAttribute('server') || '/channel';
@@ -64,6 +73,7 @@ textarea[is=x-sharejs-textarea] * { box-sizing: border-box; margin: 0; }
       // trying
 
       elem.disabled = false;
+
       doc.attach_textarea(elem);
 
       // ready callback
@@ -78,18 +88,8 @@ textarea[is=x-sharejs-textarea] * { box-sizing: border-box; margin: 0; }
   };
 
   El.createdCallback = function() {
+    this.spellcheck = false;
     this.loadDoc();
-
-    // copied from code area
-    this.style.fontFamily = "Menlo, monospace";
-    this.style.padding = "4px";
-    this.style.resize = "none";
-    this.style.outline = "none";
-    this.style.fontSize = "12px";
-    this.style.lineHeight = "14px";
-    this.style.whiteSpace = "pre";
-    this.style.wordWrap = "normal";
-    this.style.overflowX = "scroll";
   };
   El.attributeChangedCallback = function(attr, oldVal, newVal) {
     if (attr === "name") {
