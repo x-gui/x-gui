@@ -1,4 +1,7 @@
-*cmp* is a minimalist set of web components for building consistent web app user interfaces.
+**cmp** is a minimalist set of web components for building consistent web app user interfaces.
+
+Screenshot (demo app shows composition of components)
+![](https://cloud.githubusercontent.com/assets/182479/15037378/60eec6a0-124f-11e6-8aaf-a44e6f5ba301.png)
 
 ## Some guidelines
   - Avoid using a web component framework. Use only VanillaJS.  
@@ -28,7 +31,7 @@ The name "cmp" was chosen as short hand for "component". Having a short name is 
 
 ## Warning
 
-This is a work in progress. Still figuring out how to distribute these web components. Some of the components are incomplete. See comments.
+This is a work in progress. Some of the components may be incomplete. See comments in source code.
 
 
 ## Dependencies
