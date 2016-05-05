@@ -9,7 +9,7 @@
 
 ## Structure
 
-Each component is placed in `/components/x-component-name`. Within that directory there's `x-component-name.html` and an example html file showing usage named `x-component-name-example.html`.
+Each component is placed in it's own directory, eg `/x-component-name`. Within that directory there's `x-component-name.html` and an example html file showing usage named `x-component-name-example.html`.
 
 By convention components are prefixed with `x-`. Custom elements are required to have a hyphen in the name. I consider `x` as a short way of flagging "custom".
 
