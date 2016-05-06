@@ -1,4 +1,4 @@
-**cmp** is a minimalist set of web components for building consistent web app user interfaces.
+**x-gui** is a minimalist set of web components for building consistent web app user interfaces.
 
 Screenshot (demo app shows composition of components)
 ![](https://cloud.githubusercontent.com/assets/182479/15037378/60eec6a0-124f-11e6-8aaf-a44e6f5ba301.png)
@@ -6,7 +6,7 @@ Screenshot (demo app shows composition of components)
 ## Install
 
 ```
-bower install rchrd2/cmp
+bower install rchrd2/x-gui
 ```
 
 ## Some guidelines
@@ -32,7 +32,7 @@ For more information see my slides from my talk at a Sandstorm Meet Up: http://w
 
 The /demos shows examples of composing these web components into an app.
 
-The name "cmp" was chosen as short hand for "component". Having a short name is useful, because other components can be created outside of this main project, but use the "cmp" namespace. For example a component that requires a third-party library could be called, "cmp-3rd-party".
+This "x-gui" package contains a base set of components, but other components can can have their own packages.
 
 
 ## Warning
