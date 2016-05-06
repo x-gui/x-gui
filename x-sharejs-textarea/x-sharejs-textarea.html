@@ -14,7 +14,7 @@ x-sharejs-textarea * { box-sizing: border-box; margin: 0; }
 <script>
 (function(window, document, undefined) {
   var thisDoc = (document._currentScript || document.currentScript).ownerDocument;
-  var El = Object.create(HTMLElement.prototype);
+  var El = Object.create(HTMLTextAreaElement.prototype);
 
   El.loadTemplate = function() {
     // load default textarea

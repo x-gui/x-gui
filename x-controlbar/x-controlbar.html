@@ -2,10 +2,17 @@
   x-controlbar {
     background-color:#ccc;
     display:block;
-    padding: 0.0725rem 1rem;
+    padding: 0.0925rem 1rem 0.0725rem 1rem;
+    height: 22px;
+
+    display: flex;
+    /*background-color:#eee;*/
+    /*padding:0 5px 0 10px;*/
+    align-items: center;
+    align-content: center;
   }
   x-controlbar content > select {
-    border:1px solid transparent;
+    border:0 solid transparent;
     border-radius:0;
     background-color:transparent;
     margin:0;
@@ -34,7 +41,6 @@
     while (content && this.childNodes.length) {
       content.appendChild(this.firstChild);
     }
-    // this.innerHTML = "";
     this.appendChild(clone);
   }
 
@@ -49,9 +55,9 @@
    */
   var handleSelectChange = function(select) {
     var option = select.options[select.selectedIndex];
-    var callbackName = option.getAttribute('on-click');
     var first = select.querySelector('option');
     select.value = first.value;
+    var callbackName = option.getAttribute('on-click');
     if (callbackName) {
       var callback = resolve(callbackName, window, true);
       if (callback) {

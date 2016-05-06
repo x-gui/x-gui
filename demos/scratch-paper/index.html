@@ -1,0 +1,168 @@
+<html>
+<head>
+  <script>
+  /* Only load webcomponent-lite polyfill when needed */
+  var webComponentsSupported = ('registerElement' in document
+    && 'import' in document.createElement('link')
+    && 'content' in document.createElement('template'));
+  if (!webComponentsSupported) {
+    var wcPoly = document.createElement('script');
+    wcPoly.src = '../../bower_components/webcomponentsjs/webcomponents-lite.js';
+    document.head.appendChild(wcPoly);
+  }
+  </script>
+  <script src="../../bower_components/microevent/microevent.js"></script>
+  <link rel="import" href="../../lib-css-reset/lib-css-reset.html">
+  <link rel="import" href="../../x-panes/x-panes.html">
+  <link rel="import" href="../../x-controlbar/x-controlbar.html">
+  <link rel="import" href="../../x-codearea/x-codearea.html">
+  <link rel="import" href="../../x-paper/x-paper.html">
+  <style>
+*, *:before, *:after { box-sizing: border-box; }
+html, body { height:100%; }
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Menlo, monospace;
+  font-size: 12px;
+  line-height: 14px;
+  background-color: #eee;
+}
+#app { display: flex; flex-direction: column; height: 100%; }
+#layout {
+  flex: 1;
+  padding: 15px 15px;
+  overflow-x: auto;
+  white-space: nowrap;
+  display: flex;
+}
+
+/* paper */
+x-paper {
+  flex: 0 0 500px;
+  flex-wrap: nowrap;
+  background-color:#fff;
+  display: flex;
+  flex-direction: column;
+  /*border: 1px solid #ccc;*/
+  /*border: none;*/
+  margin-right: 20px;
+}
+
+x-paper textarea {
+  flex: 1 1 auto;
+  border: 0;
+  margin: 0;
+  padding: 10px;
+}
+
+/* controlbar styles */
+/*x-controlbar { background-color: rgba(51, 51, 51, 0.5); }*/
+/*x-controlbar > content > select { font-weight:bold; color: #fff; }*/
+/*x-controlbar { background-color: transparent; }*/
+/*x-controlbar { background-color: #333; }*/
+/*x-controlbar > content > select { width: 100px; color: #ccc; }*/
+x-controlbar { background-color: white; }
+
+/* firefox selector */
+@supports (-moz-appearance:none) and (display:contents) {
+  x-controlbar > content > select {
+    width: 70px;
+  }
+}
+  </style>
+</head>
+<body bgcolor="#fff">
+  <div id="app">
+    <x-controlbar>
+      <select name="select">
+        <option value="" selected>Scratch</option>
+        <option value="About" on-click="alert">About</option>
+      </select>
+      <select name="select">
+        <option value="" selected>File</option>
+        <option on-click="addFile">Add</option>
+        <option on-click="removeFile">Remove</option>
+      </select>
+      <select name="select">
+        <option value="" selected>Help</option>
+      </select>
+    </x-controlbar>
+    <div id="layout"></div>
+  </div>
+  <script>
+var ST = {
+  files: [
+    {isVisible: true, title: "", value: ""},
+  ]
+};
+MicroEvent.mixin(ST);
+
+function addFile() {
+  ST.files.push({isVisible: true, value: ""});
+  ST.trigger('change');
+}
+function removeFile() {
+  if (confirm("This will remove the last file.")) {
+    ST.files.pop();
+    ST.trigger('change');
+  }
+}
+
+function createPaperEl(index) {
+  var el = new XPaperElement();
+  el.title = String(index + 1);
+  // el.setAttribute('on-close', "removeFile");
+  // el.setAttribute('on-close-arg', String(index));
+  el.setAttribute('hide-controls', 'true');
+  // el.setAttribute('hide-header', 'true');
+  var textarea = new XCodeAreaElement();
+  el.querySelector('.x-paper-body').appendChild(textarea);
+  return el;
+}
+
+function updateFilesUi(files) {
+  var layout = document.getElementById('layout');
+  // first prune els
+  while (layout.children.length > files.length) {
+    layout.removeChild(layout.lastChild);
+  }
+  // then update els
+  var el;
+  for (var i = 0; i < files.length; i++) {
+    el = layout.children[i];
+    if (el === undefined) {
+      el = createPaperEl(i);
+      layout.appendChild(el);
+    } else {
+      // update els
+    }
+  }
+}
+
+function initState() {
+  window.ST = ST;
+}
+
+function initHandlers() {
+  ST.bind('change', function() {
+    updateFilesUi(ST.files);
+  });
+}
+
+function ready() {
+  initState();
+  initHandlers();
+  updateFilesUi(ST.files);
+}
+
+if (webComponentsSupported === false) {
+  window.addEventListener('WebComponentsReady', function(e) {
+    ready();
+  });
+} else {
+  ready();
+}
+  </script>
+</body>
+</html>

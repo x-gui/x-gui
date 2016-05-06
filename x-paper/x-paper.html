@@ -1,0 +1,119 @@
+<!--
+<x-paper> is an inline window.
+It provides a header with a title and controls and it provides a body.
+propTypes:
+  {string} hide-controls ("true" or "false")
+  {string} hide-header ("true" or "false")
+  {string} title
+-->
+
+<style>
+x-paper {
+  border: 1px solid #ccc;
+  display: block;
+  background-color: #fff;
+}
+.x-paper-header {
+  display: flex;
+  height: 26px;
+  background-color:#eee;
+  padding:0 5px 0 10px;
+  align-items: center;
+  align-content: center;
+}
+.x-paper-title {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  font-family: sans-serif;
+  font-size: 12px;
+  line-height: 12px;
+}
+.x-paper-controls {}
+.x-paper-body {
+  flex: 1;
+  display: flex;
+}
+</style>
+
+<template id="x-paper-template">
+  <div class="x-paper-header">
+    <div class="x-paper-title"></div>
+    <div class="x-paper-controls">
+      <button class="x-paper-close-button">Close</button>
+    </div>
+  </div>
+  <div class="x-paper-body">
+    <content></content>
+  </div>
+</template>
+
+<script>
+(function(window, document, undefined) {
+  var thisDoc =  (document._currentScript || document.currentScript).ownerDocument;
+  var ElProto = Object.create(HTMLElement.prototype);
+
+  ElProto.loadTemplate = function() {
+    var template = thisDoc.getElementById('x-paper-template').content;
+    var clone = document.importNode(template, true);
+    var content = clone.querySelector('content');
+    while (content && this.childNodes.length) {
+      content.appendChild(this.firstChild);
+    }
+    this.appendChild(clone);
+  }
+
+  var resolve = function(path, obj, safe) {
+    return path.split('.').reduce(function(prev, curr) {
+        return !safe ? prev[curr] : (prev ? prev[curr] : undefined)
+    }, obj || self)
+  };
+
+  ElProto.createdCallback = function() {
+    this.loadTemplate();
+    this.querySelector('.x-paper-close-button').onclick = function() {
+      var callbackName = this.getAttribute('on-close');
+      var callbackArg = this.getAttribute('on-close-arg');
+      if (callbackName) {
+        var callback = resolve(callbackName, window, true);
+        if (callback) {
+          callback(callbackArg);
+        }
+      }
+    }.bind(this);
+
+    // update controls
+    this.updateControls(this.getAttribute('hide-controls'));
+    this.updateHeader(this.getAttribute('hide-header'));
+  };
+
+  ElProto.updateControls = function(val) {
+    if (val === 'true') {
+      this.querySelector('.x-paper-controls').style.display = 'none';
+    } else {
+      this.querySelector('.x-paper-controls').style.display = null;
+    }
+  }
+
+  ElProto.updateHeader = function(val) {
+    if (val === 'true') {
+      this.querySelector('.x-paper-header').style.display = 'none';
+    } else {
+      this.querySelector('.x-paper-header').style.display = null;
+    }
+  }
+
+  ElProto.attributeChangedCallback = function(attr, oldVal, newVal) {
+    if (attr == "title" && oldVal !== newVal) {
+      this.querySelector('.x-paper-title').innerHTML = newVal;
+    } else if (attr == "hide-controls" && oldVal !== newVal) {
+      this.updateControls(newVal);
+    } else if (attr == "hide-header" && oldVal !== newVal) {
+      this.updateHeader(newVal);
+    }
+  };
+  window.XPaperElement = document.registerElement("x-paper", {
+    prototype: ElProto,
+  });
+})(window, document);
+</script>
