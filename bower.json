@@ -12,9 +12,6 @@
     "test",
     "tests"
   ],
-  "dependencies": {
-    "viz.js": "^1.3.0"
-  },
   "devDependencies": {
     "webcomponentsjs": "~0.7.15",
     "microevent": "^1.1.1"
