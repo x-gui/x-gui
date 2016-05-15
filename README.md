@@ -3,6 +3,9 @@
 Screenshot (demo app shows composition of components)
 ![](https://cloud.githubusercontent.com/assets/182479/15037378/60eec6a0-124f-11e6-8aaf-a44e6f5ba301.png)
 
+
+Link to [**online demo**](https://rchrd2.github.com/x-gui).
+
 ## Install
 
 ```
@@ -43,6 +46,11 @@ This is a work in progress. Some of the components may be incomplete. See commen
 ## Dependencies
 
 At the moment, there are some some open source libraries included within components. However, components themselves are written using vanilla JavaScript without a library like Polymer or React.
+
+
+## Contributing
+
+All welcome: Feedback, suggestions, issues, pull requests, etc.
 
 
 ## Author

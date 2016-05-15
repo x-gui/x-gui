@@ -85,6 +85,7 @@ x-paper {
     // update controls
     this.updateControls(this.getAttribute('hide-controls'));
     this.updateHeader(this.getAttribute('hide-header'));
+    this.updateTitle(this.getAttribute('title'));
   };
 
   ElProto.updateControls = function(val) {
@@ -103,9 +104,13 @@ x-paper {
     }
   }
 
+  ElProto.updateTitle = function(val) {
+    this.querySelector('.x-paper-title').innerHTML = val;
+  }
+
   ElProto.attributeChangedCallback = function(attr, oldVal, newVal) {
     if (attr == "title" && oldVal !== newVal) {
-      this.querySelector('.x-paper-title').innerHTML = newVal;
+      this.updateTitle(newVal);
     } else if (attr == "hide-controls" && oldVal !== newVal) {
       this.updateControls(newVal);
     } else if (attr == "hide-header" && oldVal !== newVal) {
