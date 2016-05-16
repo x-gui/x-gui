@@ -4,7 +4,7 @@ Screenshot (demo app shows composition of components)
 ![](https://cloud.githubusercontent.com/assets/182479/15037378/60eec6a0-124f-11e6-8aaf-a44e6f5ba301.png)
 
 
-Link to [**online demo**](https://x-gui.github.com/x-gui).
+Link to [**online demo**](https://x-gui.github.io/x-gui/).
 
 ## Install
 
