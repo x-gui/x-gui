@@ -9,7 +9,7 @@ Link to [**online demo**](https://x-gui.github.com/x-gui).
 ## Install
 
 ```
-bower install rchrd2/x-gui
+bower install x-gui/x-gui
 ```
 
 ## Some guidelines
